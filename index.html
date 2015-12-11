@@ -4,7 +4,7 @@
   <meta http-equiv="Content-Type" content="text/html" charset="utf-8"/>
   <title>Babylon - Getting Started</title>
   <!-- link to the last version of babylon -->
-  <script src="babylon.2.1.debug.js"></script>
+  <script src="babylon.2.2.js"></script>
   <style>
   html, body {
     overflow: hidden;
@@ -25,49 +25,51 @@
   <canvas id="renderCanvas"></canvas>
   <script>
     window.addEventListener('DOMContentLoaded', function(){
-      var canvas = document.getElementById('renderCanvas');
-      var engine = new BABYLON.Engine(canvas, true);
+    var canvas = document.getElementById('renderCanvas');
+    var engine = new BABYLON.Engine(canvas, true);
 
-      var createScene = function(){
-		    // create a basic BJS Scene object
-		    var scene = new BABYLON.Scene(engine);
+    var createScene = function () {
 
-		    // create a FreeCamera, and set its position to (x:0, y:5, z:-10)
-		    var camera = new BABYLON.FreeCamera('camera1', new BABYLON.Vector3(0, 5,-10), scene);
+      // Set the scene and background color
+      var scene = new BABYLON.Scene(engine);
+      scene.clearColor = new BABYLON.Color3(0,0,0.2);
 
-		    // target the camera to scene origin
-		    camera.setTarget(BABYLON.Vector3.Zero());
+      // Create a camera
+      var camera = new BABYLON.ArcRotateCamera("Camera", 2, 1.25, 35, BABYLON.Vector3.Zero(), scene);
 
-		    // attach the camera to the canvas
-		    camera.attachControl(canvas, false);
+      // Attach camera to canvas
+      camera.attachControl(canvas, false);
 
-		    // create a basic light, aiming 0,1,0 - meaning, to the sky
-		    var light = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(0,1,0), scene);
+      // Add a light
+      var light = new BABYLON.HemisphericLight("hemi", new BABYLON.Vector3(0, 1, 0), scene);
+      light.intensity = 0.75;
+      light.groundColor = new BABYLON.Color3(0.1, 0, .5);
 
-		    // create a built-in "sphere" shape; its constructor takes 5 params: name, width, depth, subdivisions, scene
-		    var sphere = new BABYLON.Mesh.CreateSphere('sphere1', 16, 2, scene);
+      // Create a builtin shape
+      var box = BABYLON.Mesh.CreateSphere('planet', 6, 15, scene, false, 0);
+      box.showBoundingBox = false;
 
-		    // move the sphere upward 1/2 of its height
-		    sphere.position.y = 1;
+      // Define a material
+      var material = new BABYLON.StandardMaterial("std", scene);
+      material.diffuseColor = new BABYLON.Color3(0.1, 0, 0.6);
 
-		    // create a built-in "ground" shape; its constructor takes the same 5 params as the sphere's one
-		    var ground = new BABYLON.Mesh.CreateGround('ground1', 6, 6, 2, scene);
+      // Apply the material
+      box.material = material;
 
-		    // return the created scene
-		    return scene;
-			}
+      return scene;
+    };
 
-			var scene = createScene();
+    var scene = createScene();
 
-			engine.runRenderLoop(function(){
-		    scene.render();
-			});
+    engine.runRenderLoop(function(){
+      scene.render();
+    });
 
-			window.addEventListener('resize', function(){
-		    engine.resize();
-			});
+    window.addEventListener('resize', function(){
+      engine.resize();
+    });
 
     });
-</script>
+  </script>
 </body>
 </html>
